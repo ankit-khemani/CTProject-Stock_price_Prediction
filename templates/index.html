@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Stock Price Prediction</title>
+</head>
+<body>
+    <h1>Stock Price Prediction</h1>
+    <form id="prediction-form">
+        <label for="feature1">Open Price:</label>
+        <input type="number" step="0.01" name="Open" id="feature1" required><br><br>
+
+        <label for="feature2">High Price:</label>
+        <input type="number" step="0.01" name="High" id="feature2" required><br><br>
+
+        <label for="feature3">Low Price:</label>
+        <input type="number" step="0.01" name="Low" id="feature2" required><br><br>
+
+        <label for="feature4">Volume:</label>
+        <input type="number" step="0.01" name="Volume" id="feature2" required><br><br>
+
+        <!-- Add more input fields for other features if needed -->
+
+        <input type="submit" value="Predict">
+    </form>
+
+    <h2>Prediction Result:</h2>
+    <div id="prediction-result"></div>
+
+    <script>
+        // Function to handle form submission and display prediction result
+        function predictStockPrice(event) {
+            event.preventDefault();
+            const form = event.target;
+            const formData = new FormData(form);
+
+            fetch('/predict', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(Object.fromEntries(formData)),
+            })
+            .then(response => response.json())
+            .then(data => {
+                const predictionResult = document.getElementById('prediction-result');
+                predictionResult.innerText = `Predicted Stock Price: ${data.prediction}`;
+            })
+            .catch(error => console.error('Error:', error));
+        }
+
+        // Attach the event listener to the form
+        const predictionForm = document.getElementById('prediction-form');
+        predictionForm.addEventListener('submit', predictStockPrice);
+    </script>
+</body>
+</html>
